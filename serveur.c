@@ -35,7 +35,7 @@ int main() {
     //gérer l'arriver des clients
     while((socket_client = accept(socket_serveur, NULL, NULL))){
         pthread_t th_client;
-        pthread_create(&th_client, NULL, ??, &socket_client);
+        pthread_create(&th_client, NULL, gestion_connect, &socket_client);
     }
     close (socket_serveur);
 
@@ -46,7 +46,7 @@ void* gestion_connect(void* psocket_client){
     //récupération socket client
     int socket_client = *((int *)psocket_client);
     char mess_client [256];
-    printf("Le client est bien connecté");
+    printf("Le client est bien connecté \n");
 
     read(socket_client, mess_client, 256);
     printf("%s ", mess_client);

@@ -29,10 +29,10 @@ int main() {
     }
     char mess_serveur [256];
     char* stock_mess_cl;
-    printf("Vous êtes bien connecté");
+    printf("Vous êtes bien connecté \n");
     scanf("%s ", stock_mess_cl);
 
-    write(socket_serveur, stock_mess_cl, sizeof(stock_mess_cl));
+    write(socket_serveur, "test", 8);
 
     return 0;
 }
