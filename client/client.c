@@ -13,7 +13,7 @@
 
 int main() {
     //mise en place du seveur
-    int socket_serveur = socket (AF_INET,SOCK_STREAM,0);
+    int socket_serveur = socket(AF_INET, SOCK_STREAM, 0);
 
     // mise en place de l'adresse
     struct sockaddr_in adr_serv;
@@ -22,13 +22,13 @@ int main() {
     adr_serv.sin_addr.s_addr = INADDR_ANY;
 
     //initier connexion
-    int etat_connect = connect (socket_serveur, (struct sockaddr *) &adr_serv, sizeof(adr_serv));
+    int etat_connect = connect(socket_serveur, (struct sockaddr *) &adr_serv, sizeof(adr_serv));
     //vérifier connexion
     if (etat_connect == -1) {
         printf("Erreur de connexion \n");
     }
-    char mess_serveur [256];
-    char* stock_mess_cl;
+    char mess_serveur[256];
+    char *stock_mess_cl;
     printf("Vous êtes bien connecté \n");
     scanf("%s ", stock_mess_cl);
 
