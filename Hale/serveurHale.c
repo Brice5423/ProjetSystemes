@@ -4,7 +4,8 @@
 
 #include "serveurHale.h"
 
-int ma_socket; // ma_prise
+
+int ma_socket;
 
 
 void sauvegarde(Dossier *dossier) {
