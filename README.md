@@ -52,9 +52,12 @@ https://github.com/Brice5423/ProjetSystemes
 Pour les dossiers, je créerait une structure avec tous les champs nécessaires d'un dossier (penser à un champ pour savoir si le dossier est dispo ou pas) et pour les arguments du thread, je ferais une autre structure avec le socketclient et un tableau de 100 dossier (car dans le sujet, il y a 100 places)
 Des questions ? x)
 
+--------------------------------------------------------------------------------
+
 # Lien code
 
 "1ère variable la nôtre et 2ème celle de Hale"
+
     Dans serveur.c
     
 - socket_server -> ma_socket
@@ -63,6 +66,7 @@ Des questions ? x)
 - socket_client -> client_socket
 - mess_client ->
 - psocket_client ->
+
 
     Dans client.c
     
