@@ -5,7 +5,7 @@
 #ifndef PROJETSYSTEMES_CLIENTHALE_H
 #define PROJETSYSTEMES_CLIENTHALE_H
 
-// se trouve dans le sinnn //
+// se trouve dans le sinon //
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
