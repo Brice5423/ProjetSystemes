@@ -16,6 +16,8 @@
 #include <pthread.h>
 #include <time.h>
 
+#define NB_MAX_PLACE 100 // Nombre de réservations max possible
+
 void *gestion_connect(void *psocket_client);
 
 int main() {
@@ -31,7 +33,7 @@ int main() {
     // connecter le socket a l'ip et le port
     bind(socket_serveur, (struct sockaddr *) &adr_serv, sizeof(adr_serv));
 
-    listen(socket_serveur, 100); // nombre de connexion simultaner
+    listen(socket_serveur, NB_MAX_PLACE); // nombre de connexion simultaner
 
     int socket_client;
     // gérer l'arriver des clients
