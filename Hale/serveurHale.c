@@ -11,12 +11,12 @@ int ma_socket;
 void sauvegarde(Dossier *dossier) {
     FILE *fichier;
     int i = 0;
-    fichier = fopen("save.txt", "w"); //Ouvre un fichier en mode "écriture"
+    fichier = fopen("save.txt", "w"); // Ouvre un fichier en mode "écriture"
 
     while (i < NB_DOSSIER) {
         if (!dossier[i].disponible) {
-            fputs(dossier[i].num_dossier, fichier); //"file put string" sert à insérer du texte dans le fichier
-            fputc('\n', fichier); //"file put char" insère un new line
+            fputs(dossier[i].num_dossier, fichier); // "file put string" sert à insérer du texte dans le fichier
+            fputc('\n', fichier); // "file put char" insère un new line
             fputs(dossier[i].nom, fichier);
             fputc('\n', fichier);
             fputs(dossier[i].prenom, fichier);
@@ -24,7 +24,7 @@ void sauvegarde(Dossier *dossier) {
         }
         i++;
     }
-    fclose(fichier); //ferme le fichier
+    fclose(fichier); // ferme le fichier
 }
 
 
@@ -73,17 +73,17 @@ void *fonc(void *arg) {
 
             sauvegarde(param->ensemble_dossiers);
         }
-    } else { //Annulation d'une réservation
-        read(param->client_socket, buffer, sizeof(buffer)); //Récupération du nom du client
+    } else { // Annulation d'une réservation
+        read(param->client_socket, buffer, sizeof(buffer)); // Récupération du nom du client
 
-        read(param->client_socket, num_dossier, sizeof(num_dossier)); //Récupération du numéro de dossier
+        read(param->client_socket, num_dossier, sizeof(num_dossier)); // Récupération du numéro de dossier
         c = 0;
         i = 0;
         while (c < NB_DOSSIER) { //Parcours des dossiers
             if (!param->ensemble_dossiers[c].disponible) {
                 if (!strcmp(buffer, param->ensemble_dossiers[c].nom) &&
                     !strcmp(num_dossier,
-                            param->ensemble_dossiers[c].num_dossier)) { //On vérifie qu'il s'agit du bon dossier afin de le supprimer
+                            param->ensemble_dossiers[c].num_dossier)) { // On vérifie qu'il s'agit du bon dossier afin de le supprimer
                     param->ensemble_dossiers[c].disponible = 1;
                     param->ensemble_dossiers[c].nom = NULL;
                     param->ensemble_dossiers[c].prenom = NULL;
@@ -123,10 +123,11 @@ int main() {
 
     pthread_t td;
 
-    system("echo 'Adresse IP du serveur : ' && hostname -I | cut -d' ' -f1"); //Affiche l'adresse IP du serveur
+    system("echo 'Adresse IP du serveur : ' && hostname -I | cut -d' ' -f1"); // Affiche l'adresse IP du serveur
 
-    srand(time(NULL));
+    srand(time(NULL)); // initialiser le générateur de nombres aléatoires (la fonction rand)
 
+    // mise en place de l'adresse du serveur
     bzero(&my_adr, sizeof(my_adr));
     my_adr.sin_port = htons(30000);
     my_adr.sin_family = AF_INET;
@@ -138,17 +139,17 @@ int main() {
         exit(0);
     }
 
-    bind(ma_socket, (struct sockaddr *) &my_adr, sizeof(my_adr)); //Bind le serveur sur la socket
-    listen(ma_socket, 5);
+    bind(ma_socket, (struct sockaddr *) &my_adr, sizeof(my_adr)); // Bind le serveur sur la socket
+    listen(ma_socket, 5); // nombre de connexion simultaner
     long_addr = sizeof(client_address);
 
-    Dos = (Dossier *) malloc(sizeof(Dossier) * NB_DOSSIER);
+    Dos = (Dossier *) malloc(sizeof(Dossier) * NB_DOSSIER); // allouer dynamiquement de la mémoire
 
 
-    fichier = fopen("save.txt", "r");
+    fichier = fopen("save.txt", "r"); // Ouvre un fichier en mode "lecture"
     i = 0;
 
-    while (c != EOF && (c = fgetc(fichier)) != EOF) { //On parcourt le fichier de sauvegarde
+    while (c != EOF && (c = fgetc(fichier)) != EOF) { // On parcourt le fichier de sauvegarde
         if (i == 0) {
             printf("Précédentes réservations efféctuées: \n");
         }
@@ -160,7 +161,7 @@ int main() {
 
         Dos[i].num_dossier[0] = c;
         j = 1;
-        while ((c = fgetc(fichier)) != '\n') { //On récupère le numéro de dossier
+        while ((c = fgetc(fichier)) != '\n') { // On récupère le numéro de dossier
             Dos[i].num_dossier[j] = c;
             j++;
         }
@@ -168,25 +169,25 @@ int main() {
 
 
         j = 0;
-        while ((c = fgetc(fichier)) != '\n') { //On récupère le nom de la personne
+        while ((c = fgetc(fichier)) != '\n') { // On récupère le nom de la personne
             Dos[i].nom[j] = c;
             j++;
         }
 
 
         j = 0;
-        while ((c = fgetc(fichier)) && c != '\n') { //On récupère le nom de la personne
+        while ((c = fgetc(fichier)) && c != '\n') { // On récupère le nom de la personne
             Dos[i].prenom[j] = c;
             j++;
         }
         printf("%s\t-\t%s\t-\t%s\n", Dos[i].num_dossier, Dos[i].nom,
-               Dos[i].prenom); //Affichage des clients déjà inscrits
+               Dos[i].prenom); // Affichage des clients déjà inscrits
         i++;
     }
 
     fclose(fichier);
 
-    while (i < NB_DOSSIER) { //On initialise les fichiers restants
+    while (i < NB_DOSSIER) { // On initialise les fichiers restants
         Dos[i].disponible = 1;
         Dos[i].num_dossier = NULL;
         Dos[i].nom = NULL;
@@ -198,7 +199,7 @@ int main() {
     printf("En attente de connexion(s) ...\n");
 
     while ((client_socket = accept(ma_socket, (struct sockaddr *) &client_address, &long_addr)) >
-           0) { //On attend une ou des connexion(s)
+           0) { // On attend une ou des connexion(s)
         Arg *T;
 
         T = (Arg *) malloc(sizeof(Arg) * 1);
