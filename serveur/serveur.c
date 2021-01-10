@@ -50,6 +50,7 @@ void *gestion_connect(void *psocket_client) {
     // récupération socket client
     int socket_client = *((int *) psocket_client);
     char mess_client[256];
+
     printf("Le client est bien connecté \n");
 
     read(socket_client, mess_client, 256);
