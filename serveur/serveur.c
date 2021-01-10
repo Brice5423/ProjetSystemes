@@ -2,9 +2,11 @@
 #ifdef __WIN32__
 #include <winsock2.h>
 #else
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+
 #endif
 
 #include <stdio.h>
@@ -32,7 +34,7 @@ int main() {
     listen(socket_serveur, 100);
 
     int socket_client;
-    //gérer l'arriver des clients
+    // gérer l'arriver des clients
     while ((socket_client = accept(socket_serveur, NULL, NULL))) {
         pthread_t th_client;
         pthread_create(&th_client, NULL, gestion_connect, &socket_client);

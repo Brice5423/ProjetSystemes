@@ -5,20 +5,27 @@
 #ifndef PROJETSYSTEMES_SERVEURHALE_H
 #define PROJETSYSTEMES_SERVEURHALE_H
 
+// se trouve dans le sinnn //
+# include <sys/socket.h>
+# include <netinet/in.h>
+
+// on les a par defaut //
 # include <stdio.h>
 # include <stdlib.h>
 # include <unistd.h>
-# include <sys/wait.h>
-# include <netinet/in.h>
 # include <string.h>
-# include <sys/types.h>
-# include <sys/socket.h>
+# include <pthread.h>
+# include <time.h>
+
+// On les a pas //
 # include <signal.h>
 # include <stdbool.h>
-# include <time.h>
-# include <pthread.h>
+# include <sys/wait.h>
+# include <sys/types.h>
+
 
 # define NB_DOSSIER 100 //Nombre de réservations max.
+
 
 struct dossier { // crée une structure dossier
     int disponible;
