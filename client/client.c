@@ -20,15 +20,15 @@ void vide_mess_stocker();
 
 
 int main() {
-    // mise ne place des variable
+    // Mise ne place des variables
     char mess_stock_serv[256];
     char mess_stock_client[256];
     char mess_client;
 
-    // mise en place du seveur
+    // Mise en place du serveur
     int socket_serveur = socket(AF_INET, SOCK_STREAM, 0);
 
-    // mise en place de l'adresse
+    // Mise en place de l'adresse
     struct sockaddr_in adr_serv;
     adr_serv.sin_family = AF_INET;
     adr_serv.sin_port = htons(2569);
@@ -36,9 +36,9 @@ int main() {
 
     system("clear"); // Pour vider la page
 
-    // initier connexion
+    // Initier connexion
     int etat_connect = connect(socket_serveur, (struct sockaddr *) &adr_serv, sizeof(adr_serv));
-    // vérifier connexion
+    // Vérifier connexion
     if (etat_connect == -1) {
         printf("Erreur de connexion\n");
     }
@@ -78,7 +78,7 @@ int main() {
             printf("\nVeuillez saisir votre prénom :\n");
             vide_mess_stocker();
             scanf("%s", mess_stock_client);
-            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le prenom au serveur
+            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le prénom au serveur
 
             read(socket_serveur, mess_stock_serv, sizeof(mess_stock_serv)); // On récupère le numéro de dossier
             printf("\nVotre numéro de dossier est : %s\n", mess_stock_serv);
@@ -92,7 +92,7 @@ int main() {
         printf("|     Annuler une réservation     |\n");
         printf("-----------------------------------\n");
 
-        printf("\nVeuillez saisir votre numéro de dossier à annuler :\n");
+        printf("\nVeuillez saisir votre numéro de dossier :\n");
         vide_mess_stocker();
         scanf("%s", mess_stock_client);
         write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le numéro de dossier au serveur
@@ -108,7 +108,7 @@ int main() {
         vide_mess_stocker();
 
         printf("\n\nPressez sur la touche \"entrée\" pour pouvoir quitter l'application...\n\n");
-        getchar(); // Attente que la touche "entrée" pour quité.
+        getchar(); // Attente que la touche "entrée" pour quitter.
 
         system("clear"); // Pour vider la page
     }
