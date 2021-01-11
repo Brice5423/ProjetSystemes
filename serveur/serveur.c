@@ -242,6 +242,8 @@ void *gestion_connect(void *psocket_client) {
         }
     }
 
+    printf("\nLe client n'est pu connecté\n\n");
+
     shutdown(socket_client, 2); // Pause
     close(socket_client); // Déconnexion
 }

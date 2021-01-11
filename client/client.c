@@ -59,8 +59,11 @@ int main() {
     printf("|   3 - Quitter l'application     |\n");
     printf("-----------------------------------\n");
 
-    printf("\nVeuillez faire votre choix (1/2/3) : \n");
-    scanf("%c", &mess_client);
+    do {
+        printf("\nVeuillez faire votre choix (1/2/3) : \n");
+        scanf("%c", &mess_client);
+    } while (!((mess_client == '1') || (mess_client == '2') || (mess_client == '3')));
+
 
     system("clear"); // Pour vider la page
 
