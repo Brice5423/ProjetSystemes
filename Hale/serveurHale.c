@@ -222,7 +222,6 @@ int main() {
         T->ensemble_dossiers = Dos;
 
         pthread_create(&td, NULL, fonc, T);
-
     }
 
     close(ma_socket);

@@ -35,7 +35,7 @@ typedef struct s_dossier T_Dossier;
 
 // Mise en place du type T_Info
 struct s_info {
-    int socket_client;
+    int socket_clients;
     T_Dossier *ensemble_dossiers;
 };
 typedef struct s_info T_Info;
@@ -86,9 +86,9 @@ int main() {
             printf("---------------------------------------------\n");
         }
 
-        liste_dossier[i].num_dossier = malloc(11);
-        liste_dossier[i].nom = malloc(255);
-        liste_dossier[i].prenom = malloc(255);
+        liste_dossier[i].num_dossier = malloc(sizeof(char) * 11);
+        liste_dossier[i].nom = malloc(sizeof(char) * 255);
+        liste_dossier[i].prenom = malloc(sizeof(char) * 255);
 
         liste_dossier[i].disponible = INDISPONIBLE; // = 0
         liste_dossier[i].num_dossier[0] = carac_verif;
@@ -114,7 +114,7 @@ int main() {
 
         // Affichage des dossiers en fonction de "i" //
         printf("\nDossier [%s] :\t num dos =  %s,\t nom = %s,\t prenom = %s\n",
-               i+1, liste_dossier[i].num_dossier, liste_dossier[i].nom, liste_dossier[i].prenom);
+               (i+1), liste_dossier[i].num_dossier, liste_dossier[i].nom, liste_dossier[i].prenom);
 
         i++;
     }
@@ -135,6 +135,7 @@ int main() {
     printf("----------------------------------------\n");
     printf("|     Action liée avec les client      |\n");
     printf("----------------------------------------\n\n");
+
     int socket_client;
     while ((socket_client = accept(socket_serveur, NULL, NULL))) {
         pthread_t th_client;
@@ -152,15 +153,16 @@ int main() {
 // Les autres fonctions //
 
 void *gestion_connect(void *psocket_client) {
-    int socket_client = *((int *) psocket_client); // Récupération socket client
-
-    char mess_stock[256];
-    char num_dossier[11];
+    //int socket_client = *((int *) psocket_client); // Récupération socket client
 
     T_Info *info_client;
     info_client = (T_Info *) psocket_client;
+    int socket_client = info_client->socket_clients; // Récupération socket client dans "socket_client"
 
     printf("\nLe client est bien connecté\n\n");
+
+    char mess_stock[256];
+    char num_dossier[11];
 
     int c = 0;
     int i = -1;
@@ -178,23 +180,26 @@ void *gestion_connect(void *psocket_client) {
         }
 
         if (i == -1) {
-            write(socket_client, "Aucun réservation possible", 128);
+            char mess_reser_null[64] = "Aucun réservation possible";
+            write(socket_client, mess_reser_null, sizeof(mess_reser_null));
         }
         else {
-            write(socket_client, "Réservation possible", 128);
-            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupération du nom du client
-            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Affectation du nom du client au dossier
-            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupération du prénom du client
-            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Affectation du prénom du client au dossier
+            char mess_reser_ok[64] = "Réservation possible";
+            write(socket_client, mess_reser_ok, sizeof(mess_reser_ok));
 
-            c = 0;
-            while (c < 10) { // Génération aléatoire d'un numéro de dossier
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récuper le nom du client
+            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Dossier récuper le nom du client
+
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récuper le prenom du client
+            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Dossier récuper le prenom du client
+
+            for (c = 0; c < 10; c++) { // Génération un nombre aléatoire pour le dossier
                 num_dossier[c] = '0' + (rand() % 10);
-                c++;
             }
-            num_dossier[10] = '\0';
-            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); // Affectation du numéro de dossier
-            write(socket_client, num_dossier, sizeof(num_dossier)); // Envoi du numéro de dossier
+            num_dossier[10] = '\0'; // Pour la fin de la chaine de caractère
+
+            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); // Récuper le numéro de dossier
+            write(socket_client, num_dossier, sizeof(num_dossier)); // Envoi le numéro de dossier
             printf("Votre dossier (n° %s) a été réservé par %s %s.\n",
                    num_dossier, info_client->ensemble_dossiers[i].nom, info_client->ensemble_dossiers[i].prenom);
 
@@ -218,7 +223,9 @@ void *gestion_connect(void *psocket_client) {
 
                     sauvegarde_des_dossiers(info_client->ensemble_dossiers); // Mettre à jour le fichier sauvegarde
 
-                    write(socket_client, "Réservation a été annulée avec succès", 128);
+                    char mess_annul[64] = "Réservation a été annulée avec succès";
+                    write(socket_client, mess_annul, sizeof(mess_annul));
+
                     printf("Votre dossier (n° %s) a été annulé avec succès\n", num_dossier);
 
                     c = NB_MAX_PLACE;
@@ -229,7 +236,8 @@ void *gestion_connect(void *psocket_client) {
         }
 
         if (!i) { // La reservation n'existe pas
-            write(socket_client, "Votre réservation est introuvable", 128);
+            char mess_reser[64] = "Votre réservation est introuvable";
+            write(socket_client, mess_reser, sizeof(mess_reser));
         }
     }
 
