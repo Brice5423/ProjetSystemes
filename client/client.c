@@ -27,6 +27,10 @@ int main() {
 
     // Mise en place du serveur
     int socket_serveur = socket(AF_INET, SOCK_STREAM, 0);
+    if (socket_serveur < 0) {
+        printf("Erreur de socket\n");
+        exit(0);
+    }
 
     // Mise en place de l'adresse
     struct sockaddr_in adr_serv;
@@ -41,6 +45,7 @@ int main() {
     // Vérifier connexion
     if (etat_connect == -1) {
         printf("Erreur de connexion\n");
+        exit(0);
     }
     printf("Vous êtes bien connecté\n");
 
@@ -73,12 +78,12 @@ int main() {
             printf("\nVeuillez saisir votre nom :\n");
             vide_mess_stocker();
             scanf("%s", mess_stock_client);
-            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le nom au serveur
+            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); // On envoie le nom au serveur
 
             printf("\nVeuillez saisir votre prénom :\n");
             vide_mess_stocker();
             scanf("%s", mess_stock_client);
-            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le prénom au serveur
+            write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); // On envoie le prénom au serveur
 
             read(socket_serveur, mess_stock_serv, sizeof(mess_stock_serv)); // On récupère le numéro de dossier
             printf("\nVotre numéro de dossier est : %s\n", mess_stock_serv);
@@ -95,7 +100,7 @@ int main() {
         printf("\nVeuillez saisir votre numéro de dossier :\n");
         vide_mess_stocker();
         scanf("%s", mess_stock_client);
-        write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); //On envoie le numéro de dossier au serveur
+        write(socket_serveur, mess_stock_client, sizeof(mess_stock_client)); // On envoie le numéro de dossier au serveur
 
         read(socket_serveur, mess_stock_serv, sizeof(mess_stock_serv)); // Le serveur confirme ou non la demande
         printf("\n%s", mess_stock_serv);
@@ -111,6 +116,12 @@ int main() {
         getchar(); // Attente que la touche "entrée" pour quitter.
 
         system("clear"); // Pour vider la page
+    }
+    else if (mess_client == '5') {
+        printf("\ntest 1 : \n");
+        vide_mess_stocker();
+        scanf("%c", &mess_stock_client);
+        write(socket_serveur, mess_stock_client, sizeof(mess_stock_client));
     }
 
     //Fermeture de la connexion
