@@ -70,7 +70,7 @@ int main() {
 
         printf("%s\n\n", mess_stock_serv);
 
-        if (mess_stock_serv[0] == 'U') {
+        if (mess_stock_serv[0] == 'R') { // On regarde la premier lettre du message
             printf("---------------------------------\n");
             printf("|     Faire une réservation     |\n");
             printf("---------------------------------\n");

@@ -43,8 +43,8 @@ typedef struct s_info T_Info;
 
 // Déclaration des fonctions //
 void *gestion_connect(void *psocket_client);
-void sauvegarde_des_dossiers(T_Dossier *dossier);
 
+void sauvegarde_des_dossiers(T_Dossier *dossier);
 
 
 int main() {
@@ -105,16 +105,18 @@ int main() {
             liste_dossier[i].nom[j] = carac_verif;
             j++;
         }
+        liste_dossier[i].nom[j] = '\0';
 
         j = 0; // Récupère le prénom de la personne //
         while ((carac_verif = fgetc(fichier_r)) && carac_verif != '\n') {
             liste_dossier[i].prenom[j] = carac_verif;
             j++;
         }
+        liste_dossier[i].prenom[j] = '\0';
 
         // Affichage des dossiers en fonction de "i" //
-        printf("\nDossier [%s] :\t num dos =  %s,\t nom = %s,\t prenom = %s\n",
-               (i+1), liste_dossier[i].num_dossier, liste_dossier[i].nom, liste_dossier[i].prenom);
+        printf("\nDossier [%d] :\t num dos = %s,\t nom = %s,\t prenom = %s\n", (i + 1), liste_dossier[i].num_dossier,
+               liste_dossier[i].nom, liste_dossier[i].prenom);
 
         i++;
     }
@@ -140,7 +142,11 @@ int main() {
     while ((socket_client = accept(socket_serveur, NULL, NULL))) {
         pthread_t th_client;
 
-        pthread_create(&th_client, NULL, gestion_connect, &socket_client);
+        T_Info donnee;
+        donnee.socket_clients = socket_client;
+        donnee.ensemble_dossiers = liste_dossier;
+
+        pthread_create(&th_client, NULL, gestion_connect, &donnee);
     }
 
     close(socket_serveur);
@@ -168,24 +174,24 @@ void *gestion_connect(void *psocket_client) {
     int i = -1;
 
     read(socket_client, mess_stock, sizeof(mess_stock));
+
     if (mess_stock[0] == 'r') { //Faire une réservation
         while (c < NB_MAX_PLACE) {
+            printf("c : %i \t %i \n", c, info_client->ensemble_dossiers[c].disponible);
             if (info_client->ensemble_dossiers[c].disponible) { // Chercher un dossier disponible
+                printf("c > if\n");
                 info_client->ensemble_dossiers[c].disponible = 0; // Réserve dossier
+                printf("c > if 2\n");
 
                 i = c;
                 c = NB_MAX_PLACE;
             }
             c++;
         }
-
         if (i == -1) {
-            char mess_reser_null[64] = "Aucun réservation possible";
-            write(socket_client, mess_reser_null, sizeof(mess_reser_null));
-        }
-        else {
-            char mess_reser_ok[64] = "Réservation possible";
-            write(socket_client, mess_reser_ok, sizeof(mess_reser_ok));
+            write(socket_client, "Aucun réservation possible", 64);
+        } else {
+            write(socket_client, "Réservation possible", 64);
 
             read(socket_client, mess_stock, sizeof(mess_stock)); // Récuper le nom du client
             info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Dossier récuper le nom du client
@@ -205,8 +211,7 @@ void *gestion_connect(void *psocket_client) {
 
             sauvegarde_des_dossiers(info_client->ensemble_dossiers);
         }
-    }
-    else { // Annulation d'une réservation
+    } else { // Annulation d'une réservation
         read(socket_client, mess_stock, sizeof(mess_stock)); // Récupère le nom du client
         read(socket_client, num_dossier, sizeof(num_dossier)); // Récupère le numéro du dossier
 
@@ -236,8 +241,7 @@ void *gestion_connect(void *psocket_client) {
         }
 
         if (!i) { // La reservation n'existe pas
-            char mess_reser[64] = "Votre réservation est introuvable";
-            write(socket_client, mess_reser, sizeof(mess_reser));
+            write(socket_client, "Votre réservation est introuvable", 64);
         }
     }
 
@@ -249,6 +253,8 @@ void sauvegarde_des_dossiers(T_Dossier *dossier) {
     int i;
     FILE *fichier_w;
     fichier_w = fopen("sauvegarde.txt", "w"); // Ouvre un fichier en mode "écriture"
+
+    printf("save");
 
     for (i = 0; i < NB_MAX_PLACE; i++) {
         if (!dossier[i].disponible) {
