@@ -117,12 +117,6 @@ int main() {
 
         system("clear"); // Pour vider la page
     }
-    else if (mess_client == '5') {
-        printf("\ntest 1 : \n");
-        vide_mess_stocker();
-        scanf("%c", &mess_stock_client);
-        write(socket_serveur, mess_stock_client, sizeof(mess_stock_client));
-    }
 
     //Fermeture de la connexion
     shutdown(socket_serveur, 2);

@@ -115,11 +115,12 @@ int main() {
         liste_dossier[i].prenom[j] = '\0';
 
         // Affichage des dossiers en fonction de "i" //
-        printf("\nDossier [%d] :\t num dos = %s,\t nom = %s,\t prenom = %s\n", (i + 1), liste_dossier[i].num_dossier,
+        printf("\nDossier [%d] : num dos = %s, nom = %s, prenom = %s\n", (i + 1), liste_dossier[i].num_dossier,
                liste_dossier[i].nom, liste_dossier[i].prenom);
 
         i++;
     }
+    printf("\n");
 
     fclose(fichier_r);
 
@@ -175,19 +176,17 @@ void *gestion_connect(void *psocket_client) {
 
     read(socket_client, mess_stock, sizeof(mess_stock));
 
-    if (mess_stock[0] == 'r') { //Faire une réservation
+    if (mess_stock[0] == 'r') { // Réservation
         while (c < NB_MAX_PLACE) {
-            printf("c : %i \t %i \n", c, info_client->ensemble_dossiers[c].disponible);
             if (info_client->ensemble_dossiers[c].disponible) { // Chercher un dossier disponible
-                printf("c > if\n");
                 info_client->ensemble_dossiers[c].disponible = 0; // Réserve dossier
-                printf("c > if 2\n");
 
                 i = c;
                 c = NB_MAX_PLACE;
             }
             c++;
         }
+
         if (i == -1) {
             write(socket_client, "Aucun réservation possible", 64);
         } else {
@@ -200,7 +199,7 @@ void *gestion_connect(void *psocket_client) {
             info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Dossier récuper le prenom du client
 
             for (c = 0; c < 10; c++) { // Génération un nombre aléatoire pour le dossier
-                num_dossier[c] = '0' + (rand() % 10);
+                num_dossier[c] = '0' + ((rand() + (i * i) ) % 10);
             }
             num_dossier[10] = '\0'; // Pour la fin de la chaine de caractère
 
@@ -212,7 +211,6 @@ void *gestion_connect(void *psocket_client) {
             sauvegarde_des_dossiers(info_client->ensemble_dossiers);
         }
     } else { // Annulation d'une réservation
-        read(socket_client, mess_stock, sizeof(mess_stock)); // Récupère le nom du client
         read(socket_client, num_dossier, sizeof(num_dossier)); // Récupère le numéro du dossier
 
         i = 0;
@@ -228,8 +226,7 @@ void *gestion_connect(void *psocket_client) {
 
                     sauvegarde_des_dossiers(info_client->ensemble_dossiers); // Mettre à jour le fichier sauvegarde
 
-                    char mess_annul[64] = "Réservation a été annulée avec succès";
-                    write(socket_client, mess_annul, sizeof(mess_annul));
+                    write(socket_client, "Réservation a été annulée avec succès", 64);
 
                     printf("Votre dossier (n° %s) a été annulé avec succès\n", num_dossier);
 
