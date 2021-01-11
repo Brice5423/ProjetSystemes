@@ -1,4 +1,4 @@
-// librairies serveurs
+// Librairies serveurs
 #ifdef __WIN32__
 #include <winsock2.h>
 #else
@@ -52,20 +52,20 @@ int main() {
 
     srand(time(NULL));
 
-    // mise en place du seveur //
+    // Mise en place du serveur //
     int socket_serveur = socket(AF_INET, SOCK_STREAM, 0);
 
-    // mise en place de l'adresse //
+    // Mise en place de l'adresse //
     struct sockaddr_in adr_serveur;
     bzero(&adr_serveur, sizeof(adr_serveur));
     adr_serveur.sin_family = AF_INET;
-    adr_serveur.sin_port = htons(2569); // numero du port serveur (2569)
+    adr_serveur.sin_port = htons(2569); // Numéro du port serveur (2569)
     adr_serveur.sin_addr.s_addr = INADDR_ANY;
 
-    // connecter le socket a l'ip et le port //
+    // Connecter le socket a l'Ip et le port //
     bind(socket_serveur, (struct sockaddr *) &adr_serveur, sizeof(adr_serveur));
 
-    // nombre de connexion simultaner //
+    // Nombre de connexion simultanées //
     listen(socket_serveur, NB_MAX_PLACE);
 
 
@@ -106,13 +106,13 @@ int main() {
             j++;
         }
 
-        j = 0; // Récupère le prenom de la personne //
+        j = 0; // Récupère le prénom de la personne //
         while ((carac_verif = fgetc(fichier_r)) && carac_verif != '\n') {
             liste_dossier[i].prenom[j] = carac_verif;
             j++;
         }
 
-        // affichage des dossiers en fonction de "i" //
+        // Affichage des dossiers en fonction de "i" //
         printf("\nDossier [%s] :\t num dos =  %s,\t nom = %s,\t prenom = %s\n",
                i+1, liste_dossier[i].num_dossier, liste_dossier[i].nom, liste_dossier[i].prenom);
 
@@ -233,7 +233,7 @@ void *gestion_connect(void *psocket_client) {
         }
     }
 
-    shutdown(socket_client, 2); // pause
+    shutdown(socket_client, 2); // Pause
     close(socket_client); // Déconnexion
 }
 
