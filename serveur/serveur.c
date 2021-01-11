@@ -122,7 +122,7 @@ int main() {
     fclose(fichier_r);
 
 
-    int i_reste; // Commplete le reste du dossier comme DISPONIBLE //
+    int i_reste; // Complète le reste du dossier comme DISPONIBLE //
     for (i_reste = i; i_reste < NB_MAX_PLACE; i_reste++) {
         liste_dossier[i_reste].disponible = DISPONIBLE; // = 1
         liste_dossier[i_reste].num_dossier = NULL;
@@ -131,7 +131,7 @@ int main() {
     }
 
 
-    // gérer l'arriver des clients //
+    // Gère l'arriver des clients //
     printf("----------------------------------------\n");
     printf("|     Action liée avec les client      |\n");
     printf("----------------------------------------\n\n");
@@ -152,7 +152,7 @@ int main() {
 // Les autres fonctions //
 
 void *gestion_connect(void *psocket_client) {
-    int socket_client = *((int *) psocket_client); // récupération socket client
+    int socket_client = *((int *) psocket_client); // Récupération socket client
 
     char mess_stock[256];
     char num_dossier[11];
@@ -168,8 +168,8 @@ void *gestion_connect(void *psocket_client) {
     read(socket_client, mess_stock, sizeof(mess_stock));
     if (mess_stock[0] == 'r') { //Faire une réservation
         while (c < NB_MAX_PLACE) {
-            if (info_client->ensemble_dossiers[c].disponible) { // chercher un dossier disponible
-                info_client->ensemble_dossiers[c].disponible = 0; // reserve dossier
+            if (info_client->ensemble_dossiers[c].disponible) { // Chercher un dossier disponible
+                info_client->ensemble_dossiers[c].disponible = 0; // Réserve dossier
 
                 i = c;
                 c = NB_MAX_PLACE;
@@ -182,32 +182,32 @@ void *gestion_connect(void *psocket_client) {
         }
         else {
             write(socket_client, "Réservation possible", 128);
-            read(socket_client, mess_stock, sizeof(mess_stock)); //Récupération du nom du client
-            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); //Affectation du nom du client au dossier
-            read(socket_client, mess_stock, sizeof(mess_stock)); //Récupération du prénom du client
-            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); //Affectation du prénom du client au dossier
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupération du nom du client
+            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Affectation du nom du client au dossier
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupération du prénom du client
+            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Affectation du prénom du client au dossier
 
             c = 0;
-            while (c < 10) { //Génération aléatoire d'un numéro de dossier
+            while (c < 10) { // Génération aléatoire d'un numéro de dossier
                 num_dossier[c] = '0' + (rand() % 10);
                 c++;
             }
             num_dossier[10] = '\0';
-            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); //Affectation du numéro de dossier
-            write(socket_client, num_dossier, sizeof(num_dossier)); //Envoi du numéro de dossier
+            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); // Affectation du numéro de dossier
+            write(socket_client, num_dossier, sizeof(num_dossier)); // Envoi du numéro de dossier
             printf("Votre dossier (n° %s) a été réservé par %s %s.\n",
                    num_dossier, info_client->ensemble_dossiers[i].nom, info_client->ensemble_dossiers[i].prenom);
 
             sauvegarde_des_dossiers(info_client->ensemble_dossiers);
         }
     }
-    else { //Annulation d'une réservation
+    else { // Annulation d'une réservation
         read(socket_client, mess_stock, sizeof(mess_stock)); // Récupère le nom du client
         read(socket_client, num_dossier, sizeof(num_dossier)); // Récupère le numéro du dossier
 
         i = 0;
 
-        while (c < NB_MAX_PLACE) { //Parcours des dossiers
+        while (c < NB_MAX_PLACE) { // Parcours des dossiers
             if (!info_client->ensemble_dossiers[c].disponible) {
                 // Verification du bon dossier à supprimée //
                 if (!strcmp(num_dossier, info_client->ensemble_dossiers[c].num_dossier)) {
@@ -216,7 +216,7 @@ void *gestion_connect(void *psocket_client) {
                     info_client->ensemble_dossiers[c].prenom = NULL;
                     info_client->ensemble_dossiers[c].num_dossier = NULL;
 
-                    sauvegarde_des_dossiers(info_client->ensemble_dossiers); // mettre à jour le fichier souvegare
+                    sauvegarde_des_dossiers(info_client->ensemble_dossiers); // Mettre à jour le fichier sauvegarde
 
                     write(socket_client, "Réservation a été annulée avec succès", 128);
                     printf("Votre dossier (n° %s) a été annulé avec succès\n", num_dossier);
@@ -228,13 +228,13 @@ void *gestion_connect(void *psocket_client) {
             c++;
         }
 
-        if (!i) { // la reservation n'existe pas
+        if (!i) { // La reservation n'existe pas
             write(socket_client, "Votre réservation est introuvable", 128);
         }
     }
 
     shutdown(socket_client, 2); // pause
-    close(socket_client); // deconnexion
+    close(socket_client); // Déconnexion
 }
 
 void sauvegarde_des_dossiers(T_Dossier *dossier) {
@@ -244,19 +244,19 @@ void sauvegarde_des_dossiers(T_Dossier *dossier) {
 
     for (i = 0; i < NB_MAX_PLACE; i++) {
         if (!dossier[i].disponible) {
-            // insert la numero de dossier dans le fichier
+            // Insert la numéro de dossier dans le fichier
             fputs(dossier[i].num_dossier, fichier_w);
             fputc('\n', fichier_w);
 
-            // insert le nom du client dans le fichier
+            // Insert le nom du client dans le fichier
             fputs(dossier[i].nom, fichier_w);
             fputc('\n', fichier_w);
 
-            // insert le prenom du client dans le fichier
+            // Insert le prénom du client dans le fichier
             fputs(dossier[i].prenom, fichier_w);
             fputc('\n', fichier_w);
         }
     }
 
-    fclose(fichier_w); //ferme le fichier
+    fclose(fichier_w); // Ferme le fichier
 }
