@@ -27,7 +27,7 @@
 // Mise en place du type T_Dossier
 struct s_dossier {
     int disponible;
-    char *num_dossier; // pointeur pour qu'on puisse faire un tableau de char
+    char *num_dossier; // Pointeur pour qu'on puisse faire un tableau de char
     char *nom;
     char *prenom;
 };
@@ -78,7 +78,7 @@ int main() {
 
     int j;
     int i = 0;
-    char carac_verif; // Parcourt le fichier de sauvegarde //
+    char carac_verif; // Parcours le fichier de sauvegarde //
     while (carac_verif != EOF && (carac_verif = fgetc(fichier_r)) != EOF) {
         if (i == 0) {
             printf("---------------------------------------------\n");
@@ -192,18 +192,18 @@ void *gestion_connect(void *psocket_client) {
         } else {
             write(socket_client, "Réservation possible", 64);
 
-            read(socket_client, mess_stock, sizeof(mess_stock)); // Récuper le nom du client
-            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Dossier récuper le nom du client
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupère le nom du client
+            info_client->ensemble_dossiers[i].nom = strdup(mess_stock); // Dossier récupère le nom du client
 
-            read(socket_client, mess_stock, sizeof(mess_stock)); // Récuper le prenom du client
-            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Dossier récuper le prenom du client
+            read(socket_client, mess_stock, sizeof(mess_stock)); // Récupère le prénom du client
+            info_client->ensemble_dossiers[i].prenom = strdup(mess_stock); // Dossier récupère le prénom du client
 
             for (c = 0; c < 10; c++) { // Génération un nombre aléatoire pour le dossier
                 num_dossier[c] = '0' + ((rand() + (i * i) ) % 10);
             }
             num_dossier[10] = '\0'; // Pour la fin de la chaine de caractère
 
-            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); // Récuper le numéro de dossier
+            info_client->ensemble_dossiers[i].num_dossier = strdup(num_dossier); // Récupère le numéro de dossier
             write(socket_client, num_dossier, sizeof(num_dossier)); // Envoi le numéro de dossier
             printf("Votre dossier (n° %s) a été réservé par %s %s.\n",
                    num_dossier, info_client->ensemble_dossiers[i].nom, info_client->ensemble_dossiers[i].prenom);
