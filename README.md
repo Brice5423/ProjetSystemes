@@ -1,3 +1,7 @@
+# Réaliser par Brice ORLIANGE & Nicolas COLLIGNON
+
+--------------------------------------------------------------------------------
+
 # FONCTIONNEMENT DE L'APPLICATION
 
 ## Lancement de l'application 
